@@ -1,0 +1,10 @@
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\KRPC.exe.config
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\KRPC.exe
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\KRPC.pdb
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\Google.Protobuf.dll
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\KRPC.Client.dll
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\Google.Protobuf.xml
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\KRPC.Client.xml
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\obj\Debug\KRPC.csprojResolveAssemblyReference.cache
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\obj\Debug\KRPC.exe
+C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\obj\Debug\KRPC.pdb

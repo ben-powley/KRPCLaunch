@@ -1,37 +1,40 @@
-﻿using System;
-using System.Threading;
-using KRPC.Client;
+﻿using KRPC.Client;
 using KRPC.Client.Services.KRPC;
 using KRPC.Client.Services.SpaceCenter;
-using KRPC.Client.Services.UI;
+using System;
+using System.Threading;
 
 namespace KRPC
 {
-    class Launch
+    internal class Launch
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Thread.Sleep(5000);
-            
             var connection = new Connection(name: "KRPC");
             var krpc = connection.KRPC();
 
             var spaceCenter = connection.SpaceCenter();
             var vessel = spaceCenter.ActiveVessel;
-            
+
             Launch launch = new Launch();
-            launch.Init(vessel, connection);
+
+            launch.print("ENTER DESIRED ORBIT: ");
+            string orbit = Console.ReadLine();
+            launch.print("DESIRED ORBIT: " + orbit.ToString());
+
+            launch.Init(vessel, connection, int.Parse(orbit.ToString()));
         }
 
-        public void Init(Vessel vessel, Connection connection)
+        public void Init(Vessel vessel, Connection connection, int orbit)
         {
             var refFrame = vessel.Orbit.Body.ReferenceFrame;
             var sc = connection.SpaceCenter();
 
             int intRunmode = 1;
-            int intOrbitGoal = 200000;
+            int intOrbitGoal = orbit;
             bool burnStarted = false;
             bool staged = false;
+            bool fairingsStaged = false;
             float targetPitch = 0f;
 
             var speedStream = connection.AddStream(() => vessel.Flight(refFrame).Speed);
@@ -39,7 +42,7 @@ namespace KRPC
             var apoapsisStream = connection.AddStream(() => vessel.Orbit.ApoapsisAltitude);
             var periapsisStream = connection.AddStream(() => vessel.Orbit.PeriapsisAltitude);
             var timeToAPStram = connection.AddStream(() => vessel.Orbit.TimeToApoapsis);
-            
+
             print("TEST FLIGHT - BOOTING - " + vessel.Name);
             wait(2500);
 
@@ -60,14 +63,20 @@ namespace KRPC
                     {
                         //targetPitch = (float)Math.Max(5f, (Math.Atan(600f / vessel.Flight(refFrame).Speed) * 180f / Math.PI));
 
-                        targetPitch = (float) Math.Max(5, 90 * (1 - (vessel.Flight().MeanAltitude - 50) / (47500 - 50)));
+                        targetPitch = (float)Math.Max(5, 90 * (1 - (vessel.Flight().MeanAltitude - 50) / (47500 - 50)));
                         vessel.AutoPilot.TargetPitch = targetPitch;
-                        
-                        if (vessel.AvailableThrust == 0)
+
+                        if (vessel.AvailableThrust == 0 && !staged)
                         {
                             wait(500);
                             vessel.Control.ActivateNextStage();
                             staged = true;
+                        }
+
+                        if (vessel.Flight().MeanAltitude > 60000 && !fairingsStaged)
+                        {
+                            vessel.Control.ActivateNextStage();
+                            fairingsStaged = true;
                         }
 
                         if (vessel.Orbit.ApoapsisAltitude > intOrbitGoal)
@@ -90,8 +99,13 @@ namespace KRPC
                     if (vessel.Flight().MeanAltitude > 60000)
                     {
                         wait(2000);
+
                         if (!staged)
                             vessel.Control.ActivateNextStage();
+
+                        if (!fairingsStaged)
+                            vessel.Control.ActivateNextStage();
+
                         intRunmode = 3;
                     }
                 }
@@ -122,14 +136,16 @@ namespace KRPC
                     wait(2000);
                     intRunmode = 0;
                 }
-                
+
                 Console.Clear();
-                Console.WriteLine("SPEED:           " + speedStream.Get());
-                Console.WriteLine("ALTITUDE:        " + altitudeStream.Get());
-                Console.WriteLine("APOAPSIS:        " + apoapsisStream.Get());
-                Console.WriteLine("PERIAPSIS:       " + periapsisStream.Get());
-                Console.WriteLine("TIME TO AP:      " + timeToAPStram.Get());
-                Console.WriteLine("PITCH:           " + targetPitch.ToString());
+                Console.WriteLine("TARGET:          " + intOrbitGoal.ToString() + "m");
+                Console.WriteLine("RUNMODE:         " + intRunmode.ToString());
+                Console.WriteLine("SPEED:           " + Math.Round(speedStream.Get()) + "m/s");
+                Console.WriteLine("ALTITUDE:        " + Math.Round(altitudeStream.Get()) + "m");
+                Console.WriteLine("APOAPSIS:        " + Math.Round(apoapsisStream.Get()) + "m");
+                Console.WriteLine("PERIAPSIS:       " + Math.Round(periapsisStream.Get()) + "m");
+                Console.WriteLine("TIME TO AP:      " + Math.Round(timeToAPStram.Get()) + "s");
+                Console.WriteLine("PITCH:           " + Math.Round(targetPitch).ToString() + "°");
                 wait(50);
             }
 

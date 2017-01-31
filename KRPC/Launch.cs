@@ -63,6 +63,7 @@ namespace KRPC
                 {
                     if (vessel.Flight().MeanAltitude > 50)
                     {
+                        // Real Solar System Turn Equation
                         //targetPitch = (float)Math.Max(5f, (Math.Atan(900f / vessel.Flight(refFrame).Speed) * 180f / Math.PI));
 
                         targetPitch = (float)Math.Max(5, 90 * (1 - (vessel.Flight().MeanAltitude - 50) / (47500 - 50)));
@@ -157,7 +158,6 @@ namespace KRPC
                 Console.WriteLine("PERIAPSIS:       " + Math.Round(periapsisStream.Get()) + "m");
                 Console.WriteLine("TIME TO AP:      " + Math.Round(timeToAPStram.Get()) + "s");
                 Console.WriteLine("PITCH:           " + Math.Round(targetPitch).ToString() + "°");
-                Console.WriteLine("MOON ANGLE:      " + Math.Round(moonAngle).ToString() + "°");
                 wait(50);
             }
 

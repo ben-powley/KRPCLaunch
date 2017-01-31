@@ -29,13 +29,15 @@ namespace KRPC
         {
             var refFrame = vessel.Orbit.Body.ReferenceFrame;
             var sc = connection.SpaceCenter();
-
+            
             int intRunmode = 1;
             int intOrbitGoal = orbit;
+            bool solidBoosters = true;
             bool burnStarted = false;
             bool staged = false;
             bool fairingsStaged = false;
             float targetPitch = 0f;
+            double moonAngle = 0;
 
             var speedStream = connection.AddStream(() => vessel.Flight(refFrame).Speed);
             var altitudeStream = connection.AddStream(() => vessel.Flight(null).MeanAltitude);
@@ -43,7 +45,7 @@ namespace KRPC
             var periapsisStream = connection.AddStream(() => vessel.Orbit.PeriapsisAltitude);
             var timeToAPStram = connection.AddStream(() => vessel.Orbit.TimeToApoapsis);
 
-            print("TEST FLIGHT - BOOTING - " + vessel.Name);
+            print("BOOTING - " + vessel.Name);
             wait(2500);
 
             vessel.AutoPilot.Engage();
@@ -61,10 +63,19 @@ namespace KRPC
                 {
                     if (vessel.Flight().MeanAltitude > 50)
                     {
-                        //targetPitch = (float)Math.Max(5f, (Math.Atan(600f / vessel.Flight(refFrame).Speed) * 180f / Math.PI));
+                        //targetPitch = (float)Math.Max(5f, (Math.Atan(900f / vessel.Flight(refFrame).Speed) * 180f / Math.PI));
 
                         targetPitch = (float)Math.Max(5, 90 * (1 - (vessel.Flight().MeanAltitude - 50) / (47500 - 50)));
                         vessel.AutoPilot.TargetPitch = targetPitch;
+
+                        if (solidBoosters)
+                        {
+                            if (vessel.Resources.Amount("SolidFuel") < 1)
+                            {
+                                vessel.Control.ActivateNextStage();
+                                solidBoosters = false;
+                            }
+                        }
 
                         if (vessel.AvailableThrust == 0 && !staged)
                         {
@@ -136,7 +147,7 @@ namespace KRPC
                     wait(2000);
                     intRunmode = 0;
                 }
-
+                
                 Console.Clear();
                 Console.WriteLine("TARGET:          " + intOrbitGoal.ToString() + "m");
                 Console.WriteLine("RUNMODE:         " + intRunmode.ToString());
@@ -146,6 +157,7 @@ namespace KRPC
                 Console.WriteLine("PERIAPSIS:       " + Math.Round(periapsisStream.Get()) + "m");
                 Console.WriteLine("TIME TO AP:      " + Math.Round(timeToAPStram.Get()) + "s");
                 Console.WriteLine("PITCH:           " + Math.Round(targetPitch).ToString() + "°");
+                Console.WriteLine("MOON ANGLE:      " + Math.Round(moonAngle).ToString() + "°");
                 wait(50);
             }
 

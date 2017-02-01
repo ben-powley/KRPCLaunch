@@ -21,23 +21,30 @@ namespace KRPC
             launch.print("ENTER DESIRED ORBIT: ");
             string orbit = Console.ReadLine();
             launch.print("DESIRED ORBIT: " + orbit.ToString());
+            launch.print("SRBs USED: ");
+            string srbs = Console.ReadLine();
+            bool srbsUsed = false;
 
-            launch.Init(vessel, connection, int.Parse(orbit.ToString()));
+            if (srbs.ToLower().Equals("y"))
+                srbsUsed = true;
+            else
+                srbsUsed = false;
+
+            launch.Init(vessel, connection, int.Parse(orbit.ToString()), srbsUsed);
         }
 
-        public void Init(Vessel vessel, Connection connection, int orbit)
+        public void Init(Vessel vessel, Connection connection, int orbit, bool srbs)
         {
             var refFrame = vessel.Orbit.Body.ReferenceFrame;
             var sc = connection.SpaceCenter();
-            
+
             int intRunmode = 1;
             int intOrbitGoal = orbit;
-            bool solidBoosters = true;
+            bool solidBoosters = srbs;
             bool burnStarted = false;
             bool staged = false;
             bool fairingsStaged = false;
             float targetPitch = 0f;
-            double moonAngle = 0;
 
             var speedStream = connection.AddStream(() => vessel.Flight(refFrame).Speed);
             var altitudeStream = connection.AddStream(() => vessel.Flight(null).MeanAltitude);
@@ -148,7 +155,7 @@ namespace KRPC
                     wait(2000);
                     intRunmode = 0;
                 }
-                
+
                 Console.Clear();
                 Console.WriteLine("TARGET:          " + intOrbitGoal.ToString() + "m");
                 Console.WriteLine("RUNMODE:         " + intRunmode.ToString());

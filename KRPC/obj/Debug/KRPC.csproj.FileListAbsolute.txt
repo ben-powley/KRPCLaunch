@@ -8,3 +8,6 @@ C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\bin\Debug\K
 C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\obj\Debug\KRPC.csprojResolveAssemblyReference.cache
 C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\obj\Debug\KRPC.exe
 C:\Users\Ben-PC\Documents\Visual Studio 2015\Projects\KRPC\KRPC\KRPC\obj\Debug\KRPC.pdb
+C:\Users\Ben\Documents\Visual Studio 2015\Projects\KRPC\KRPCLaunch\KRPC\bin\Debug\KRPC.exe.config
+C:\Users\Ben\Documents\Visual Studio 2015\Projects\KRPC\KRPCLaunch\KRPC\obj\Debug\KRPC.exe
+C:\Users\Ben\Documents\Visual Studio 2015\Projects\KRPC\KRPCLaunch\KRPC\obj\Debug\KRPC.pdb
